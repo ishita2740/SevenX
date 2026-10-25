@@ -1,0 +1,533 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ragnarok - Midgard Dashboard</title>
+  <meta name="description" content="Ragnarok AI - Sovereign Personal AI Agent Dashboard">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="app-container">
+
+  <!-- Header -->
+  <header class="header">
+    <div class="logo">
+      <div class="logo-icon">R</div>
+      RAGNAROK
+    </div>
+    <div class="header-stats" id="headerStats">
+      <div class="stat-badge"><span class="dot green"></span> <span id="statModel">qwen2.5:3b</span></div>
+      <div class="stat-badge"><span class="dot blue"></span> <span id="statEpisodes">-</span> Episodes</div>
+      <div class="stat-badge"><span class="dot purple"></span> <span id="statFacts">-</span> Facts</div>
+      <div class="stat-badge"><span class="dot cyan"></span> <span id="statSkills">-</span> Skills</div>
+    </div>
+  </header>
+
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="nav-section">Main</div>
+    <div class="nav-item active" data-panel="chat">
+      <span class="icon">&#x1F4AC;</span> Chat
+    </div>
+    <div class="nav-item" data-panel="episodic">
+      <span class="icon">&#x1F4C5;</span> Episodic Memory
+    </div>
+    <div class="nav-item" data-panel="semantic">
+      <span class="icon">&#x1F9E0;</span> Semantic Memory
+    </div>
+
+    <div class="nav-section">Tools</div>
+    <div class="nav-item" data-panel="skills">
+      <span class="icon">&#x2692;</span> Skill Forge
+      <span class="badge" id="skillBadge">-</span>
+    </div>
+    <div class="nav-item" data-panel="orchestrate">
+      <span class="icon">&#x1F3AF;</span> Orchestrator
+    </div>
+
+    <div class="nav-section">System</div>
+    <div class="nav-item" data-panel="system">
+      <span class="icon">&#x2699;</span> System Info
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main-content">
+
+    <!-- Chat Panel -->
+    <div class="panel active" id="panel-chat">
+      <div class="chat-container">
+        <div class="chat-messages" id="chatMessages">
+          <div class="message assistant">
+            <div class="message-avatar">R</div>
+            <div>
+              <div class="message-content">
+                Namaste! Main Ragnarok hoon, tumhara sovereign AI. Kuch bhi pucho ya koi task do.
+              </div>
+              <div class="message-meta">Ragnarok &middot; Ready</div>
+            </div>
+          </div>
+        </div>
+        <div class="chat-input-container">
+          <div class="chat-input-wrapper">
+            <input type="text" class="chat-input" id="chatInput" 
+                   placeholder="Type your message... (Hinglish/English/Hindi)" 
+                   autocomplete="off">
+            <button class="chat-send" id="chatSend">Send</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Episodic Memory Panel -->
+    <div class="panel" id="panel-episodic">
+      <h2 style="margin-bottom:16px;display:flex;align-items:center;gap:8px">
+        &#x1F4C5; Episodic Memory
+      </h2>
+      <div class="search-bar">
+        <input type="text" id="episodicSearch" placeholder="Search episodes... (time words: kal, last week, 2026-10-20)">
+        <button class="btn btn-primary" onclick="searchEpisodic()">Search</button>
+      </div>
+      <div class="memory-list" id="episodicList"></div>
+    </div>
+
+    <!-- Semantic Memory Panel -->
+    <div class="panel" id="panel-semantic">
+      <h2 style="margin-bottom:16px;display:flex;align-items:center;gap:8px">
+        &#x1F9E0; Semantic Memory
+      </h2>
+      <div style="display:flex;gap:8px;margin-bottom:16px">
+        <div class="search-bar" style="flex:1;margin-bottom:0">
+          <input type="text" id="semanticInput" placeholder="Save a new fact or search...">
+        </div>
+        <button class="btn btn-primary" onclick="rememberFact()">Remember</button>
+        <button class="btn" onclick="searchSemantic()">Search</button>
+      </div>
+      <div class="memory-list" id="semanticList"></div>
+    </div>
+
+    <!-- Skills Panel -->
+    <div class="panel" id="panel-skills">
+      <h2 style="margin-bottom:16px;display:flex;align-items:center;gap:8px">
+        &#x2692; Dwarven Forge - Skill Registry
+      </h2>
+      <div class="card-grid" id="skillsGrid"></div>
+
+      <div class="card" id="skillRunner" style="display:none">
+        <div class="card-header">
+          <div class="card-title" id="runnerTitle">Run Skill</div>
+          <button class="btn" onclick="document.getElementById('skillRunner').style.display='none'">Close</button>
+        </div>
+        <div id="runnerParams"></div>
+        <button class="btn btn-primary" onclick="executeSkill()" style="margin-top:12px">Execute</button>
+        <pre id="runnerOutput" style="margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent-green);background:var(--bg-primary);padding:12px;border-radius:8px;display:none;overflow-x:auto"></pre>
+      </div>
+    </div>
+
+    <!-- Orchestrator Panel -->
+    <div class="panel" id="panel-orchestrate">
+      <h2 style="margin-bottom:16px;display:flex;align-items:center;gap:8px">
+        &#x1F3AF; Odin - Task Orchestrator
+      </h2>
+      <div class="search-bar">
+        <input type="text" id="goalInput" placeholder="Describe your goal... e.g. list python files and show system info">
+        <button class="btn btn-primary" onclick="orchestrate()">Execute Goal</button>
+      </div>
+      <div id="orchestrateResult"></div>
+      <h3 style="margin:24px 0 12px;color:var(--text-secondary)">Recent Task Graphs</h3>
+      <div class="memory-list" id="graphsList"></div>
+    </div>
+
+    <!-- System Panel -->
+    <div class="panel" id="panel-system">
+      <h2 style="margin-bottom:16px">&#x2699; System Info</h2>
+      <div class="card-grid" id="systemGrid"></div>
+    </div>
+
+  </main>
+
+  <!-- Right Panel -->
+  <aside class="right-panel">
+    <div>
+      <div class="right-section-title">Knowledge Graph</div>
+      <div id="knowledgeGraph"></div>
+    </div>
+    <div>
+      <div class="right-section-title">Recent Activity</div>
+      <div id="recentActivity"></div>
+    </div>
+  </aside>
+
+</div>
+
+<script>
+// ========== State ==========
+let currentPanel = 'chat';
+let selectedSkill = null;
+
+// ========== Navigation ==========
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', () => {
+    const panel = item.dataset.panel;
+    if (!panel) return;
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    item.classList.add('active');
+    document.getElementById('panel-' + panel).classList.add('active');
+    currentPanel = panel;
+    if (panel === 'episodic') loadEpisodic();
+    if (panel === 'semantic') loadSemantic();
+    if (panel === 'skills') loadSkills();
+    if (panel === 'orchestrate') loadGraphs();
+    if (panel === 'system') loadSystem();
+  });
+});
+
+// ========== API Helpers ==========
+async function api(url, opts) {
+  try {
+    const r = await fetch(url, opts);
+    return await r.json();
+  } catch(e) { return {error: e.message}; }
+}
+
+function timeAgo(ts) {
+  if (!ts) return '';
+  const d = new Date(ts);
+  const s = Math.floor((Date.now() - d) / 1000);
+  if (s < 60) return s + 's ago';
+  if (s < 3600) return Math.floor(s/60) + 'm ago';
+  if (s < 86400) return Math.floor(s/3600) + 'h ago';
+  return Math.floor(s/86400) + 'd ago';
+}
+
+// ========== Chat ==========
+const chatInput = document.getElementById('chatInput');
+const chatSend = document.getElementById('chatSend');
+const chatMessages = document.getElementById('chatMessages');
+
+function addMessage(role, text, meta) {
+  const div = document.createElement('div');
+  div.className = 'message ' + role;
+  const avatar = role === 'user' ? '&#x1F464;' : 'R';
+  div.innerHTML =
+    '<div class="message-avatar">' + avatar + '</div>' +
+    '<div><div class="message-content">' + escHtml(text) + '</div>' +
+    '<div class="message-meta">' + (meta || '') + '</div></div>';
+  chatMessages.appendChild(div);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function addLoading() {
+  const div = document.createElement('div');
+  div.className = 'message assistant';
+  div.id = 'loadingMsg';
+  div.innerHTML =
+    '<div class="message-avatar">R</div>' +
+    '<div><div class="message-content"><div class="loading"><span></span><span></span><span></span></div></div></div>';
+  chatMessages.appendChild(div);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function removeLoading() {
+  const el = document.getElementById('loadingMsg');
+  if (el) el.remove();
+}
+
+function escHtml(t) {
+  return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+}
+
+async function sendChat() {
+  const msg = chatInput.value.trim();
+  if (!msg) return;
+  chatInput.value = '';
+  chatSend.disabled = true;
+
+  addMessage('user', msg, 'You');
+  addLoading();
+
+  const data = await api('/api/chat', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({message: msg}),
+  });
+
+  removeLoading();
+  if (data.error) {
+    addMessage('assistant', 'Error: ' + data.error, 'Ragnarok');
+  } else {
+    let meta = 'Ragnarok';
+    if (data.source) meta += ' &middot; ' + data.source;
+    if (data.intent) meta += ' &middot; ' + data.intent;
+    addMessage('assistant', data.answer || 'No response', meta);
+    if (data.extracted_facts && data.extracted_facts.length) {
+      addMessage('assistant',
+        'Auto-extracted: ' + data.extracted_facts.join(', '),
+        'Memory &middot; auto');
+    }
+  }
+  chatSend.disabled = false;
+  chatInput.focus();
+  loadStats();
+}
+
+chatSend.addEventListener('click', sendChat);
+chatInput.addEventListener('keydown', e => { if (e.key === 'Enter') sendChat(); });
+
+// ========== Episodic Memory ==========
+async function loadEpisodic() {
+  const data = await api('/api/memory/episodic?n=50');
+  const list = document.getElementById('episodicList');
+  if (!Array.isArray(data)) { list.innerHTML = '<p>Error loading</p>'; return; }
+  list.innerHTML = data.map(e =>
+    '<div class="memory-item">' +
+      '<span class="memory-kind kind-' + e.kind + '">' + e.kind + '</span>' +
+      '<span class="memory-text">' + escHtml(e.text) + '</span>' +
+      '<span class="memory-time">' + timeAgo(e.timestamp) + '</span>' +
+    '</div>'
+  ).join('');
+}
+
+async function searchEpisodic() {
+  const q = document.getElementById('episodicSearch').value.trim();
+  if (!q) return loadEpisodic();
+  const data = await api('/api/memory/episodic/search?q=' + encodeURIComponent(q));
+  const list = document.getElementById('episodicList');
+  if (!Array.isArray(data)) { list.innerHTML = '<p>No results</p>'; return; }
+  list.innerHTML = data.map(e =>
+    '<div class="memory-item">' +
+      '<span class="memory-kind kind-' + e.kind + '">' + e.kind + '</span>' +
+      '<span class="memory-text">' + escHtml(e.text) + '</span>' +
+      '<span class="memory-time">' + timeAgo(e.timestamp) + '</span>' +
+    '</div>'
+  ).join('') || '<p style="color:var(--text-muted)">No results found</p>';
+}
+
+// ========== Semantic Memory ==========
+async function loadSemantic() {
+  const data = await api('/api/memory/semantic');
+  const list = document.getElementById('semanticList');
+  if (!Array.isArray(data)) { list.innerHTML = '<p>Error loading</p>'; return; }
+  list.innerHTML = data.map(f =>
+    '<div class="memory-item">' +
+      '<span class="memory-kind kind-' + f.kind + '">' + f.kind + '</span>' +
+      '<span class="memory-text">' + escHtml(f.text) +
+        (f.relation && f.object ?
+          '<br><span style="color:var(--accent-cyan);font-size:11px">' +
+          f.subject + ' --' + f.relation + '--> ' + f.object + '</span>' : '') +
+      '</span>' +
+      '<button class="btn" style="font-size:11px;padding:4px 10px" onclick="forgetFact(' + f.id + ')">Forget</button>' +
+    '</div>'
+  ).join('') || '<p style="color:var(--text-muted)">No facts saved yet</p>';
+
+  // Knowledge graph in right panel
+  const kg = document.getElementById('knowledgeGraph');
+  kg.innerHTML = data.filter(f => f.relation && f.object).slice(0, 10).map(f =>
+    '<div class="graph-node">' +
+      '<span>' + escHtml(f.subject || 'user') + '</span>' +
+      '<span class="graph-arrow">&rarr; ' + (f.relation || '') + ' &rarr;</span>' +
+      '<span>' + escHtml(f.object || '') + '</span>' +
+    '</div>'
+  ).join('') || '<p style="font-size:12px;color:var(--text-muted)">No knowledge triples yet</p>';
+}
+
+async function rememberFact() {
+  const input = document.getElementById('semanticInput');
+  const fact = input.value.trim();
+  if (!fact) return;
+  await api('/api/memory/remember', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({fact}),
+  });
+  input.value = '';
+  loadSemantic();
+  loadStats();
+}
+
+async function forgetFact(id) {
+  await api('/api/memory/forget', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({id}),
+  });
+  loadSemantic();
+  loadStats();
+}
+
+async function searchSemantic() {
+  const q = document.getElementById('semanticInput').value.trim();
+  if (!q) return loadSemantic();
+  const data = await api('/api/memory/semantic/search?q=' + encodeURIComponent(q));
+  const list = document.getElementById('semanticList');
+  if (!Array.isArray(data)) return;
+  list.innerHTML = data.map(h =>
+    '<div class="memory-item">' +
+      '<span class="memory-kind kind-' + h.kind + '">' + (h.score * 100).toFixed(0) + '%</span>' +
+      '<span class="memory-text">' + escHtml(h.text) + '</span>' +
+    '</div>'
+  ).join('') || '<p style="color:var(--text-muted)">No matches</p>';
+}
+
+// ========== Skills ==========
+async function loadSkills() {
+  const data = await api('/api/skills');
+  const grid = document.getElementById('skillsGrid');
+  if (!Array.isArray(data)) { grid.innerHTML = '<p>Error</p>'; return; }
+  grid.innerHTML = data.map(s =>
+    '<div class="skill-card" onclick=\'openSkillRunner(' + JSON.stringify(s).replace(/'/g, "\\'") + ')\'>' +
+      '<div class="skill-name">&#x2692; ' + s.name + '</div>' +
+      '<div class="skill-desc">' + escHtml(s.description || 'No description') + '</div>' +
+      '<div class="skill-meta">' +
+        '<span class="skill-tag risk-' + s.risk_level + '">' + s.risk_level + '</span>' +
+        '<span class="skill-tag">v' + s.version + '</span>' +
+        '<span class="skill-tag">timeout ' + s.timeout_seconds + 's</span>' +
+      '</div>' +
+    '</div>'
+  ).join('');
+}
+
+function openSkillRunner(skill) {
+  selectedSkill = skill;
+  document.getElementById('runnerTitle').textContent = 'Run: ' + skill.name;
+  const params = document.getElementById('runnerParams');
+  params.innerHTML = (skill.parameters || []).map(p =>
+    '<div style="margin-bottom:10px">' +
+      '<label style="font-size:12px;color:var(--text-secondary)">' + p.name +
+        ' (' + p.type + (p.required ? ', required' : '') + ')</label>' +
+      '<input type="text" id="param_' + p.name + '" class="chat-input" ' +
+        'style="width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:8px;margin-top:4px" ' +
+        'placeholder="' + (p.description || p.name) + '" ' +
+        (p.default !== null && p.default !== undefined ? 'value="' + p.default + '"' : '') + '>' +
+    '</div>'
+  ).join('') || '<p style="color:var(--text-muted);font-size:13px">No parameters needed</p>';
+  document.getElementById('runnerOutput').style.display = 'none';
+  document.getElementById('skillRunner').style.display = 'block';
+}
+
+async function executeSkill() {
+  if (!selectedSkill) return;
+  const params = {};
+  (selectedSkill.parameters || []).forEach(p => {
+    const el = document.getElementById('param_' + p.name);
+    if (el && el.value) params[p.name] = el.value;
+  });
+  const out = document.getElementById('runnerOutput');
+  out.style.display = 'block';
+  out.textContent = 'Executing...';
+  const data = await api('/api/skills/' + selectedSkill.name + '/run', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({params}),
+  });
+  out.textContent = JSON.stringify(data, null, 2);
+  out.style.color = data.success ? 'var(--accent-green)' : 'var(--accent-red)';
+}
+
+// ========== Orchestrator ==========
+async function orchestrate() {
+  const goal = document.getElementById('goalInput').value.trim();
+  if (!goal) return;
+  const result = document.getElementById('orchestrateResult');
+  result.innerHTML = '<div class="card"><div class="loading"><span></span><span></span><span></span></div> Planning and executing...</div>';
+
+  const data = await api('/api/orchestrate', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({goal}),
+  });
+
+  if (data.error) {
+    result.innerHTML = '<div class="card" style="border-color:var(--accent-red)"><p>' + escHtml(data.error) + '</p></div>';
+    return;
+  }
+
+  const nodes = data.nodes ? Object.values(data.nodes) : [];
+  result.innerHTML =
+    '<div class="card">' +
+      '<div class="card-header"><div class="card-title">&#x1F3AF; ' + escHtml(data.goal || goal) + '</div>' +
+      '<span class="skill-tag risk-' + (data.status === 'completed' ? 'low' : 'high') + '">' + data.status + '</span></div>' +
+      nodes.map(n => {
+        const icon = n.status === 'success' ? '&#x2705;' : n.status === 'failed' ? '&#x274C;' : '&#x23F3;';
+        return '<div class="memory-item">' +
+          '<span>' + icon + '</span>' +
+          '<span class="memory-text"><strong>' + n.skill + '</strong> - ' + escHtml(n.description || '') +
+          (n.error ? '<br><span style="color:var(--accent-red)">' + escHtml(n.error) + '</span>' : '') +
+          '</span><span class="memory-kind kind-' + (n.status === 'success' ? 'task' : 'event') + '">' + n.status + '</span>' +
+        '</div>';
+      }).join('') +
+      (data.reflection ? '<p style="margin-top:12px;color:var(--text-secondary);font-size:13px">' + escHtml(data.reflection) + '</p>' : '') +
+    '</div>';
+
+  loadGraphs();
+}
+
+async function loadGraphs() {
+  const data = await api('/api/graphs?n=10');
+  const list = document.getElementById('graphsList');
+  if (!Array.isArray(data) || !data.length) {
+    list.innerHTML = '<p style="color:var(--text-muted);font-size:13px">No task graphs yet</p>';
+    return;
+  }
+  list.innerHTML = data.map(g =>
+    '<div class="memory-item">' +
+      '<span class="memory-kind kind-' + (g.status === 'completed' ? 'task' : 'event') + '">' + g.status + '</span>' +
+      '<span class="memory-text">' + escHtml(g.goal) + '</span>' +
+      '<span class="memory-time">' + timeAgo(g.created_at) + '</span>' +
+    '</div>'
+  ).join('');
+}
+
+// ========== System ==========
+async function loadSystem() {
+  const data = await api('/api/system');
+  const grid = document.getElementById('systemGrid');
+  if (data.error) { grid.innerHTML = '<p>Error</p>'; return; }
+  const items = [
+    {label: 'Platform', value: data.platform},
+    {label: 'Hostname', value: data.hostname},
+    {label: 'Python', value: data.python},
+    {label: 'Model', value: data.model},
+    {label: 'Skills', value: data.skills},
+    {label: 'Disk Free', value: data.disk_free_gb + ' GB'},
+  ];
+  grid.innerHTML = items.map(i =>
+    '<div class="stat-card"><div class="value">' + i.value + '</div><div class="label">' + i.label + '</div></div>'
+  ).join('');
+}
+
+// ========== Stats ==========
+async function loadStats() {
+  const data = await api('/api/memory/stats');
+  if (data.episodic) document.getElementById('statEpisodes').textContent = data.episodic.total || 0;
+  if (data.semantic) document.getElementById('statFacts').textContent = data.semantic.total || 0;
+
+  const skills = await api('/api/skills');
+  if (Array.isArray(skills)) {
+    document.getElementById('statSkills').textContent = skills.length;
+    document.getElementById('skillBadge').textContent = skills.length;
+  }
+
+  // Load recent activity for right panel
+  const episodes = await api('/api/memory/episodic?n=8');
+  const activity = document.getElementById('recentActivity');
+  if (Array.isArray(episodes)) {
+    activity.innerHTML = episodes.slice(0, 8).map(e =>
+      '<div style="font-size:12px;padding:6px 0;border-bottom:1px solid var(--border)">' +
+        '<span class="memory-kind kind-' + e.kind + '" style="font-size:9px">' + e.kind + '</span> ' +
+        escHtml(e.text.slice(0, 60)) + (e.text.length > 60 ? '...' : '') +
+        '<div style="font-size:10px;color:var(--text-muted)">' + timeAgo(e.timestamp) + '</div>' +
+      '</div>'
+    ).join('');
+  }
+
+  loadSemantic();
+}
+
+// Initial load
+loadStats();
+</script>
+</body>
+</html>

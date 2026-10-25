@@ -1,0 +1,22 @@
+﻿name: processes
+version: "1.0"
+description: "List running processes, find by name, check resource usage"
+author: ragnarok
+risk_level: low
+timeout_seconds: 15
+parameters:
+  - name: action
+    type: string
+    required: false
+    default: top
+    description: "Action: top (resource hogs), find (by name), count"
+  - name: name
+    type: string
+    required: false
+    description: "Process name to find (for find action)"
+  - name: limit
+    type: int
+    required: false
+    default: 10
+    description: "Number of processes to show"
+entrypoint: run.py

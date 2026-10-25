@@ -1,0 +1,17 @@
+﻿name: summarize_text
+version: "1.0"
+description: "Summarize text using the local Ollama model"
+author: ragnarok
+risk_level: low
+timeout_seconds: 120
+parameters:
+  - name: text
+    type: string
+    required: true
+    description: "Text to summarize"
+  - name: max_words
+    type: int
+    required: false
+    default: 50
+    description: "Maximum words in summary"
+entrypoint: run.py

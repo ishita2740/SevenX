@@ -1,0 +1,24 @@
+﻿name: notes
+version: "1.0"
+description: "Quick note-taking - add, list, search, delete notes"
+author: ragnarok
+risk_level: low
+timeout_seconds: 10
+parameters:
+  - name: action
+    type: string
+    required: true
+    description: "Action: add, list, search, delete, export"
+  - name: text
+    type: string
+    required: false
+    description: "Note content (for add) or search query (for search)"
+  - name: note_id
+    type: int
+    required: false
+    description: "Note ID (for delete)"
+  - name: tag
+    type: string
+    required: false
+    description: "Tag for organizing notes"
+entrypoint: run.py

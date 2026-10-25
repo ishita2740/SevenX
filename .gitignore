@@ -1,4 +1,7 @@
-.venv/
-__pycache__/
+﻿__pycache__/
 *.pyc
-ragnarok_memory.db
+*.db
+.venv/
+*.egg-info/
+.env
+*.log

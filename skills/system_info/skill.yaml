@@ -1,0 +1,8 @@
+﻿name: system_info
+version: "1.0"
+description: "Get current system information (CPU, memory, disk)"
+author: ragnarok
+risk_level: low
+timeout_seconds: 10
+parameters: []
+entrypoint: run.py

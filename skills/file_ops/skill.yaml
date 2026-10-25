@@ -1,0 +1,24 @@
+﻿name: file_ops
+version: "1.0"
+description: "File operations - read, write, copy, move, delete, search content"
+author: ragnarok
+risk_level: medium
+timeout_seconds: 30
+parameters:
+  - name: action
+    type: string
+    required: true
+    description: "Action: read, write, append, copy, move, delete, search, info, tree"
+  - name: path
+    type: string
+    required: true
+    description: "File or directory path"
+  - name: content
+    type: string
+    required: false
+    description: "Content for write/append, or search query for search"
+  - name: destination
+    type: string
+    required: false
+    description: "Destination path for copy/move"
+entrypoint: run.py

@@ -1,0 +1,12 @@
+﻿name: calculator
+version: "1.0"
+description: "Safe math calculator - expressions, unit conversions, statistics"
+author: ragnarok
+risk_level: low
+timeout_seconds: 5
+parameters:
+  - name: expression
+    type: string
+    required: true
+    description: "Math expression e.g. '2+2', 'sqrt(144)', 'sin(pi/4)', 'mean(1,2,3,4,5)'"
+entrypoint: run.py

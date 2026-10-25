@@ -1,0 +1,14 @@
+﻿name: hello_world
+version: "1.0"
+description: "A simple test skill that greets the user"
+author: ragnarok
+risk_level: low
+timeout_seconds: 5
+parameters:
+  - name: name
+    type: string
+    required: false
+    default: "Ragnarok User"
+    description: "Name to greet"
+entrypoint: run.py
+dependencies: []

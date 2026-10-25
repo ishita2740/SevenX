@@ -1,0 +1,16 @@
+﻿name: clipboard
+version: "1.0"
+description: "Read from or write to system clipboard"
+author: ragnarok
+risk_level: low
+timeout_seconds: 5
+parameters:
+  - name: action
+    type: string
+    required: true
+    description: "Action: read (get clipboard), write (set clipboard)"
+  - name: text
+    type: string
+    required: false
+    description: "Text to write to clipboard (for write action)"
+entrypoint: run.py

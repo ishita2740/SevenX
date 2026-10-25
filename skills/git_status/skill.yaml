@@ -1,0 +1,18 @@
+﻿name: git_status
+version: "1.0"
+description: "Get git repository status - branch, changes, recent commits"
+author: ragnarok
+risk_level: low
+timeout_seconds: 15
+parameters:
+  - name: repo_path
+    type: string
+    required: false
+    default: "."
+    description: "Path to git repository"
+  - name: log_count
+    type: int
+    required: false
+    default: 5
+    description: "Number of recent commits to show"
+entrypoint: run.py
