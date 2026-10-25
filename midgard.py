@@ -352,7 +352,14 @@ def api_graphs():
 @app.route("/api/heimdall/status")
 def api_heimdall_status():
     _init()
-    return jsonify(_heimdall.status())
+    s = _heimdall.status()
+    # Convert Event objects in recent_events to dicts
+    if "recent_events" in s:
+        s["recent_events"] = [
+            e.to_dict() if hasattr(e, "to_dict") else e
+            for e in s["recent_events"]
+        ]
+    return jsonify(s)
 
 
 @app.route("/api/heimdall/events")
@@ -443,5 +450,6 @@ if __name__ == "__main__":
     print("  Heimdall: Background agent active")
     print()
     app.run(host="0.0.0.0", port=5000, debug=False)
+
 
 
